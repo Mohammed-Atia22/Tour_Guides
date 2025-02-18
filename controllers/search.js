@@ -1,7 +1,6 @@
 const pool = require('./db/connect');
 
 
-
 const search = async (req,res)=>{
     const{city,slanguage} = req.body;
     try {
