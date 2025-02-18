@@ -1,23 +1,25 @@
-const Job = require('../model/job');
+const pool = require('./db/connect');
 
 const createjob = async (req,res)=>{
     req.body.createdby = req.user.userid;
     console.log(req.user.userid);
-    const {city,flanguage,slanguage,fdate,sdate,money,createdby} = req.body;
-    if(!city||!flanguage||!slanguage||!fdate||!sdate||!money||!createdby){
-        return res.status(400).json({msg:'please provide your city and your first language and your second language and your trip date and the money you want to pay'});
+    createdby = req.user.userid
+    const {createdby,gender,country,city,phonenum,email,flanguage,slanguage,sdate,edate} = req.body;
+    if(!gender||!country||!city||!phonenum||!email||!flanguage||!slanguage||!sdate||!edate){
+        return res.status(400).json({msg:'your data are uncomplete please provide it'});
     }
     try {
-        const job = await Job.create(req.body);
+        const job = await pool.query('INSERT INTO card (createdby,gender,country,city,phonenum,email,flanguage,slanguagew,sdate,edate) VALUES (?,?,?,?,?,?,?,?,?,?)',[createdby,gender,country,city,phonenum,email,flanguage,slanguage,sdate,edate])
         res.status(201).json(job);
     } catch (error) {
         res.status(500).json(error);
     }
 }    
 const getalljobs = async (req,res)=>{ 
+    createdby = req.user.userid
     try {
         console.log(req.user.userid);
-        const job = await Job.find({createdby:req.user.userid});
+        const job = await pool.query('SELECT * FROM card WHERE creatdby=?',[createdby])
         res.status(200).json({job,count:job.length});
     } catch (error) {
         //res.status(500).json(error);
@@ -28,7 +30,7 @@ const getjob = async (req,res)=>{
     const id = req.params.id;
     const createdby = req.user.userid;
     try {
-        const job = await Job.findOne({_id:id,createdby:createdby});
+        const job = await pool.query('SELECT * FROM card WHERE id = ? AND createdby = ?',[id,createdby])
         res.status(200).json({job,count:job.length});
     } catch (error) {
         //res.status(500).json(error);
@@ -39,7 +41,7 @@ const updatejob = async (req,res)=>{
     const id = req.params.id;
     const createdby = req.user.userid; 
     try {
-        const job = await Job.findByIdAndUpdate({_id:id,createdby:createdby},req.body,{new:true,runValidators:true});
+        const job = await pool.query('UPDATE card SET gender=? , country=? , city=? , phonenum=? , email=? , flanguage=? , slanguage=? , sdate=? , edate=? WHERE id = ? AND createdby = ? ',[gender,country,city,phonenum,email,flanguage,slanguage,sdate,edate,id,createdby])
         res.status(200).json({job,count:job.length});
     } catch (error) {
         //res.status(500).json(error);
@@ -50,7 +52,7 @@ const deletejob = async (req,res)=>{
     const id = req.params.id;
     const createdby = req.user.userid;
     try {
-        const job = await Job.findByIdAndDelete({_id:id,createdby:createdby},{new:true,runValidators:true});
+        const job = await pool.query('DELETE FROM card WHERE id=? AND createdby=?',[id,createdby])
         res.status(200).json({job,count:job.length});
     } catch (error) {
         //res.status(500).json(error);

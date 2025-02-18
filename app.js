@@ -2,7 +2,7 @@ require('dotenv').config();
 require('express-async-errors');
 const express = require('express');
 const app = express();
-const connectDB = require('./db/connect');
+const pool = require('./db/connect');
 const authuser = require('./routes/user');
 const authjob = require('./routes/job');
 const authimage = require('./routes/image');
@@ -22,7 +22,7 @@ app.get('/',(req,res)=>{
     res.send('hello world');
 })
 
-//app.use('/refresh',require('./routes/refreshtoken'));
+app.use('/refresh',require('./routes/refreshtoken'));
 
 app.use('/api/user' , authuser);
 app.use('/refresh',require('./routes/refreshtoken'));
@@ -38,7 +38,9 @@ app.use('/api/image', authimage);
 const port = 3000;
 const start = async ()=>{
     try {
-        await connectDB(process.env.MONGO_URI);
+        const connection = await pool.getConnection();
+        console.log('Connected to MySQL database');
+        connection.release(); // Release the connection back to the pool
         app.listen(port,()=>{
             console.log(`server is listening on port ${port}`);
         });
