@@ -1,6 +1,7 @@
-const User = require('../model/user');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const pool = require('../db/connect');
+
 require('dotenv').config();
 
 const handlerefreshtoken = async (req,res) => {
@@ -9,7 +10,8 @@ const handlerefreshtoken = async (req,res) => {
     console.log(`refresh token ${cookies.jwt}`);
     const refreshtoken = cookies.jwt;
 
-    const founduser = await User.findOne({refreshToken:refreshtoken}).exec();
+    const founduser = await pool.query('SELECT * FROM user WHERE refreshtoken=?',[refreshtoken])
+    //User.findOne({refreshToken:refreshtoken}).exec();
     console.log(founduser);
     if(!founduser) return res.sendStatus(403);
     jwt.verify(

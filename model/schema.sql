@@ -32,6 +32,7 @@ CREATE TABLE card(
     `slanguagew` VARCHAR(40) NOT NULL,
     `sdate` DATE NOT NULL,
     `edate` DATE NOT NULL,
+    `cost` INT NOT NULL,
     PRIMARY KEY(`id`),
     FOREIGN KEY(`createdby`) REFERENCES user(`id`)
 );

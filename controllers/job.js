@@ -1,10 +1,10 @@
-const pool = require('./db/connect');
+const pool = require('../db/connect');
 
 const createjob = async (req,res)=>{
-    req.body.createdby = req.user.userid;
+    createdby = req.user.userid;
     console.log(req.user.userid);
     createdby = req.user.userid
-    const {createdby,gender,country,city,phonenum,email,flanguage,slanguage,sdate,edate} = req.body;
+    const {gender,country,city,phonenum,email,flanguage,slanguage,sdate,edate} = req.body;
     if(!gender||!country||!city||!phonenum||!email||!flanguage||!slanguage||!sdate||!edate){
         return res.status(400).json({msg:'your data are uncomplete please provide it'});
     }
@@ -19,11 +19,11 @@ const getalljobs = async (req,res)=>{
     createdby = req.user.userid
     try {
         console.log(req.user.userid);
-        const job = await pool.query('SELECT * FROM card WHERE creatdby=?',[createdby])
-        res.status(200).json({job,count:job.length});
+        const job = await pool.query('SELECT * FROM card WHERE createdby=?',[createdby])
+        res.status(200).json(job);
     } catch (error) {
         //res.status(500).json(error);
-        return res.status(400).json({msg:'there is no job available'});
+        return res.status(400).json({msg:'there is no card available'});
     }
 }
 const getjob = async (req,res)=>{
@@ -31,29 +31,31 @@ const getjob = async (req,res)=>{
     const createdby = req.user.userid;
     try {
         const job = await pool.query('SELECT * FROM card WHERE id = ? AND createdby = ?',[id,createdby])
-        res.status(200).json({job,count:job.length});
+        res.status(200).json(job);
     } catch (error) {
         //res.status(500).json(error);
         return res.status(400).json({msg:`there is no Job with id ${id}`});
     }
 }
 const updatejob = async (req,res)=>{
-    const id = req.params.id;
-    const createdby = req.user.userid; 
     try {
-        const job = await pool.query('UPDATE card SET gender=? , country=? , city=? , phonenum=? , email=? , flanguage=? , slanguage=? , sdate=? , edate=? WHERE id = ? AND createdby = ? ',[gender,country,city,phonenum,email,flanguage,slanguage,sdate,edate,id,createdby])
-        res.status(200).json({job,count:job.length});
+        const id = req.params.id;
+        const createdby = req.user.userid; 
+        const {phonenum,email,sdate,edate,cost} = req.body
+        const job = await pool.query('UPDATE card SET phonenum=? , email=? , sdate=? , edate=? , cost=? WHERE id = ? AND createdby = ? ',[phonenum,email,sdate,edate,cost,id,createdby])
+        res.status(200).json(job);
     } catch (error) {
         //res.status(500).json(error);
         return res.status(400).json({msg:`there is no job with id ${id}`});
     }
 }
 const deletejob = async (req,res)=>{
-    const id = req.params.id;
-    const createdby = req.user.userid;
     try {
+        const id = req.params.id;
+        const createdby = req.user.userid;
         const job = await pool.query('DELETE FROM card WHERE id=? AND createdby=?',[id,createdby])
-        res.status(200).json({job,count:job.length});
+        res.status(200).json(job);
+        console.log(job.affectedRows)
     } catch (error) {
         //res.status(500).json(error);
         return res.status(400).json({msg:`there is no job with id ${id}`});

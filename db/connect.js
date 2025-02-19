@@ -19,9 +19,11 @@ const pool = mysql.createPool({
 pool.query = util.promisify(pool.query);
 pool.getConnection = util.promisify(pool.getConnection);
 
-console.log(process.env.MYSQL_PASSWORD)
+//console.log(process.env.MYSQL_PASSWORD)
 
 module.exports = pool;
+
+
 
 
 

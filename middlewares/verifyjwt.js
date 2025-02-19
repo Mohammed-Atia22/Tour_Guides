@@ -4,20 +4,17 @@ require('dotenv').config();
 const verifyjwt = (req,res,next) => {
     const authheader = req.headers.authorization;
     if(!authheader){
-        return res.status(401);
+        res.status(401).json({ message: 'Unauthorized' });
     }
-    console.log(authheader);
+    //console.log(authheader);
     const token = authheader.split(' ')[1];
     try {
-        const payload = jwt.verify(token,process.env.ACCESS_TOKEN_SECRET,(err)=>{
-            if(err){
-                return res.sendStatus(403);
-            }
-        });
-        req.user = {userid:payload.userid,name:payload.name};
+        const payload = jwt.verify(token,process.env.ACCESS_TOKEN_SECRET);
+        //console.log(payload)
+        req.user = {userid:payload.userid,firstname:payload.firstname,lastname:payload.lastname};
         next();
     } catch (error) {
-        res.status(403).json({error});
+        res.sendStatus(403).json({error});
     }
 }
 
