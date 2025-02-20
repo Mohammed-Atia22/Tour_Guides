@@ -46,6 +46,7 @@ const login = async (req,res)=>{
         if(!user[0]) return res.sendStatus(401);
         const match = await bcrypt.compare(upassword,user[0].upassword);
         if(match){
+            console.log('match')
             const accesstoken = jwt.sign(
                 {userid:user[0].id,firstname:user[0].firstname,lastname:user[0].lastname},
                 process.env.ACCESS_TOKEN_SECRET,
@@ -57,14 +58,11 @@ const login = async (req,res)=>{
                 process.env.REFRESH_TOKEN_SECRET,
                 {expiresIn:'1d'}
             )
-            console.log(refreshtoken)
-            // user[0].refreshtoken = refreshtoken;
-            // const result = await user.save();
-            // const result = await pool.query('UPDATE user SET refreshtoken = ? WHERE id = ?',[refreshtoken,user[0].id])
-            // const user = await pool.query('SELECT * FROM user WHERE email = ?',[email])
-            // console.log(`login ${user[0].refreshtoken}`)
+            const result = await pool.query('UPDATE user SET refreshtoken = ? WHERE id = ?',[refreshtoken,user[0].id])
+            console.log(result)
+            const user1 = await pool.query('SELECT * FROM user WHERE id = ?',[user[0].id])
             res.cookie('jwt',refreshtoken,{httpOnly:true,maxAge:24*60*60*1000});
-            res.status(200).json({user,accesstoken});
+            res.status(200).json({user1,accesstoken});
             //res.status(200).json(user);
         } else {
             return res.status(401).json({msg:'invalid credentials'});

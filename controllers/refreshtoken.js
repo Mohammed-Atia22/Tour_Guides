@@ -13,16 +13,16 @@ const handlerefreshtoken = async (req,res) => {
     const founduser = await pool.query('SELECT * FROM user WHERE refreshtoken=?',[refreshtoken])
     //User.findOne({refreshToken:refreshtoken}).exec();
     console.log(founduser);
-    if(!founduser) return res.sendStatus(403);
+    if(!founduser[0]) return res.sendStatus(403);
     jwt.verify(
         refreshtoken,
         process.env.REFRESH_TOKEN_SECRET,
         (err,decode) => {
-            if(err||founduser.name !== decode.name) return res.sendStatus(403);
+            if(err||founduser[0].firstname !== decode.firstname) return res.sendStatus(403);
             const accesstoken = jwt.sign(
                 {
                     "userinfo":{
-                        "name":decode.name,
+                        "name":decode.firstname,
                     }
                 },
                 process.env.ACCESS_TOKEN_SECRET,
