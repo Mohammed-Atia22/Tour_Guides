@@ -6,6 +6,7 @@ const pool = require('./db/connect');
 const authuser = require('./routes/user');
 const authjob = require('./routes/job');
 const authrating = require('./routes/rating');
+const authreview = require('./routes/review');
 const authimage = require('./routes/image');
 const authsearch = require('./routes/search');
 const verifyjwt = require('./middlewares/verifyjwt');
@@ -30,6 +31,7 @@ app.use('/refresh',require('./routes/refreshtoken'));
 app.use('/logout',require('./routes/logout'));
 app.use('/api/job', verifyjwt , authjob);
 app.use('/api/rating', verifyjwt , authrating);
+app.use('/api/review', verifyjwt , authreview);
 app.use('/api/search', verifyjwt , authsearch);
 app.use('/api/image', authimage);
 
