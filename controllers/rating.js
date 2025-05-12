@@ -8,8 +8,9 @@ const createrating = async (req,res)=>{
         return res.status(400).json({msg:'your data are uncomplete please provide it'});
     }
     try {
-        const rating = await pool.query('INSERT INTO rating (touristid,guideid,rating) VALUES (?,?,?)',[touristid,guideid,rating])
-        res.status(201).json(rating);
+        const ratingrow = await pool.query('INSERT INTO rating (touristid,guideid,rating) VALUES (?,?,?)',[touristid,guideid,rating])
+        console.log(guideid,rating)
+        res.status(201).json(ratingrow);
     } catch (error) {
         res.status(500).json(error);
     }
