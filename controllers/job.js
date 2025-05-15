@@ -4,12 +4,12 @@ const createjob = async (req,res)=>{
     createdby = req.user.userid;
     console.log(req.user.userid);
     createdby = req.user.userid
-    const {gender,country,city,phonenum,email,flanguage,slanguage,sdate,edate} = req.body;
-    if(!gender||!country||!city||!phonenum||!email||!flanguage||!slanguage||!sdate||!edate){
+    const {country,city,phonenum,email,sdate,edate,cost,imageurl} = req.body;
+    if(!country||!city||!phonenum||!email||!sdate||!edate||!cost||!imageurl){
         return res.status(400).json({msg:'your data are uncomplete please provide it'});
     }
     try {
-        const job = await pool.query('INSERT INTO card (createdby,gender,country,city,phonenum,email,flanguage,slanguagew,sdate,edate) VALUES (?,?,?,?,?,?,?,?,?,?)',[createdby,gender,country,city,phonenum,email,flanguage,slanguage,sdate,edate])
+        const job = await pool.query('INSERT INTO card (createdby,country,city,phonenum,email,sdate,edate,cost,imageurl) VALUES (?,?,?,?,?,?,?,?,?)',[createdby,country,city,phonenum,email,sdate,edate,cost,imageurl])
         res.status(201).json(job);
     } catch (error) {
         res.status(500).json(error);

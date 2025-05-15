@@ -4,7 +4,7 @@ const pool = require('../db/connect');
 require('dotenv').config();
 
 const register =async (req,res) => {
-    const {nationalnum,firstname,lastname,email,upassword,country,imageurl,joineddate,udescription,refreshtoken,phonenum} = req.body;
+    const {nationalnum,firstname,lastname,email,upassword,country,imageurl,joineddate,udescription,refreshtoken,phonenum,gender,flanguage,slanguage} = req.body;
     if(!nationalnum||!firstname||!lastname||!email||!upassword||!country||!imageurl||!joineddate||!udescription||!phonenum){
         res.status(400).json({msg:'your data are not completed please provide all your data'});
     } else{
@@ -13,7 +13,7 @@ const register =async (req,res) => {
             if(dublicate[0]) return res.sendStatus(409);
             const salt = await bcrypt.genSalt(10);
             const hashedpassword = await bcrypt.hash(upassword,salt);
-            const client = await pool.query(`INSERT INTO user (nationalnum,firstname,lastname,email,upassword,country,imageurl,joineddate,udescription,refreshtoken,phonenum) VALUES (?,?,?,?,?,?,?,?,?,?,?)`,[nationalnum,firstname,lastname,email,hashedpassword,country,imageurl,joineddate,udescription,refreshtoken,phonenum]);
+            const client = await pool.query(`INSERT INTO user (nationalnum,firstname,lastname,email,upassword,country,imageurl,joineddate,udescription,refreshtoken,phonenum,gender,flanguage,slanguage) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,[nationalnum,firstname,lastname,email,hashedpassword,country,imageurl,joineddate,udescription,refreshtoken,phonenum,gender,flanguage,slanguage]);
             const user = await pool.query('SELECT * FROM user WHERE email=?',[email])
             console.log(user[0].id)
             const accesstoken = jwt.sign(
