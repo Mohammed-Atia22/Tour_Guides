@@ -39,14 +39,14 @@ app.use('/api/image', authimage);
 
 
 
-const port = 3000;
+
 const start = async ()=>{
     try {
         const connection = await pool.getConnection();
         console.log('Connected to MySQL database');
         connection.release(); // Release the connection back to the pool
-        app.listen(port,()=>{
-            console.log(`server is listening on port ${port}`);
+        app.listen(process.env.port,()=>{
+            console.log(`server is listening on port ${process.env.port}`);
         });
     } catch (error) {
         console.log(error);
